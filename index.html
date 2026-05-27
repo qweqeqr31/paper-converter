@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>论文格式转换器 - Word/PDF/LaTeX/Markdown 互转</title>
+  <meta name="description" content="免费论文格式转换工具，支持 Word、PDF、LaTeX、Markdown 互转，参考文献格式自动生成（GB/T 7714、APA、MLA），毕业论文排版一键搞定。">
+  <meta name="keywords" content="论文格式转换,Word转PDF,LaTeX转Word,参考文献格式,GB/T 7714,APA格式,毕业论文排版,Markdown转Word">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Open Graph -->
+  <meta property="og:title" content="论文格式转换器 - 一键搞定论文排版">
+  <meta property="og:description" content="支持 Word/PDF/LaTeX/Markdown 互转，参考文献自动生成，毕业论文排版免费工具">
+  <meta property="og:type" content="website">
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <a href="#" class="logo" onclick="navigate('home')">
+        <span class="logo-icon">&#x1F4DD;</span>
+        <span class="logo-text">论文格式转换器</span>
+      </a>
+      <nav class="nav">
+        <a href="#" onclick="navigate('convert')" class="nav-link" data-nav="convert">格式转换</a>
+        <a href="#" onclick="navigate('reference')" class="nav-link" data-nav="reference">参考文献</a>
+        <a href="#" onclick="navigate('template')" class="nav-link" data-nav="template">论文排版</a>
+        <a href="#" onclick="navigate('tools')" class="nav-link" data-nav="tools">论文工具</a>
+      </nav>
+      <button class="btn-premium" onclick="showPremium()">升级 Pro</button>
+    </div>
+  </header>
+
+  <main class="main">
+    <!-- Home -->
+    <div id="page-home" class="page active">
+      <section class="hero">
+        <div class="container">
+          <h1>论文格式转换，一键搞定</h1>
+          <p>Word / PDF / LaTeX / Markdown 互转 &middot; 参考文献自动生成 &middot; 毕业论文智能排版</p>
+          <div class="hero-actions">
+            <button class="btn-hero" onclick="navigate('convert')">开始转换</button>
+            <button class="btn-hero-outline" onclick="navigate('reference')">生成参考文献</button>
+          </div>
+          <div class="trust-badges">
+            <span>&#x2714; 完全免费</span>
+            <span>&#x2714; 无需注册</span>
+            <span>&#x2714; 本地处理，不上传服务器</span>
+          </div>
+        </div>
+      </section>
+
+      <div class="container">
+        <section class="features">
+          <div class="feature-card" onclick="navigate('convert')">
+            <span class="feature-icon">&#x1F4C4;</span>
+            <h3>格式转换</h3>
+            <p>Word &#8596; PDF &#8596; LaTeX &#8596; Markdown 多格式互转</p>
+          </div>
+          <div class="feature-card" onclick="navigate('reference')">
+            <span class="feature-icon">&#x1F4DA;</span>
+            <h3>参考文献</h3>
+            <p>GB/T 7714、APA、MLA 等格式自动生成</p>
+          </div>
+          <div class="feature-card" onclick="navigate('template')">
+            <span class="feature-icon">&#x1F4CB;</span>
+            <h3>论文排版</h3>
+            <p>智能排版，自动调整格式符合学校要求</p>
+          </div>
+          <div class="feature-card" onclick="navigate('tools')">
+            <span class="feature-icon">&#x1F527;</span>
+            <h3>论文工具</h3>
+            <p>查重助手、字数统计、摘要生成等实用工具</p>
+          </div>
+        </section>
+
+        <!-- Ad Slot -->
+        <div class="ad-slot"><span class="ad-label">广告位</span></div>
+      </div>
+    </div>
+
+    <!-- Format Convert Page -->
+    <div id="page-convert" class="page">
+      <div class="container">
+        <h2 class="page-title">格式转换</h2>
+        <div class="convert-workspace">
+          <div class="upload-zone" id="uploadZone">
+            <div class="upload-content">
+              <span class="upload-icon">&#x1F4E4;</span>
+              <p>拖拽文件到此处，或点击上传</p>
+              <p class="upload-hint">支持 .docx, .pdf, .tex, .md, .txt 格式</p>
+              <input type="file" id="fileInput" accept=".docx,.pdf,.tex,.md,.txt,.html" onchange="handleFile(this)" hidden>
+              <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">选择文件</button>
+            </div>
+          </div>
+
+          <div class="convert-options" id="convertOptions" style="display:none">
+            <div class="file-info" id="fileInfo"></div>
+            <div class="format-select">
+              <label>转换为：</label>
+              <div class="format-buttons" id="formatButtons"></div>
+            </div>
+            <button class="btn btn-primary btn-lg" onclick="startConvert()">开始转换</button>
+          </div>
+
+          <div class="convert-result" id="convertResult" style="display:none">
+            <h3>转换完成</h3>
+            <div class="output-preview" id="outputPreview"></div>
+            <div class="tool-actions">
+              <button class="btn btn-primary" onclick="downloadResult()">下载文件</button>
+              <button class="btn" onclick="copyResult()">复制内容</button>
+            </div>
+          </div>
+        </div>
+        <div class="ad-slot"><span class="ad-label">广告位</span></div>
+      </div>
+    </div>
+
+    <!-- Reference Page -->
+    <div id="page-reference" class="page">
+      <div class="container">
+        <h2 class="page-title">参考文献生成器</h2>
+        <div class="ref-workspace">
+          <div class="ref-type-select">
+            <label>文献类型：</label>
+            <div class="type-buttons">
+              <button class="type-btn active" onclick="selectRefType('journal', this)">&#x1F4D6; 期刊论文</button>
+              <button class="type-btn" onclick="selectRefType('book', this)">&#x1F4DA; 书籍</button>
+              <button class="type-btn" onclick="selectRefType('thesis', this)">&#x1F393; 学位论文</button>
+              <button class="type-btn" onclick="selectRefType('web', this)">&#x1F310; 网页</button>
+              <button class="type-btn" onclick="selectRefType('conference', this)">&#x1F3AF; 会议论文</button>
+            </div>
+          </div>
+
+          <div class="ref-form" id="refForm">
+            <!-- Dynamic form -->
+          </div>
+
+          <div class="ref-format-select">
+            <label>输出格式：</label>
+            <div class="format-buttons">
+              <button class="fmt-btn active" onclick="selectFormat('gbt7714', this)">GB/T 7714</button>
+              <button class="fmt-btn" onclick="selectFormat('apa', this)">APA 7th</button>
+              <button class="fmt-btn" onclick="selectFormat('mla', this)">MLA 9th</button>
+              <button class="fmt-btn" onclick="selectFormat('ieee', this)">IEEE</button>
+              <button class="fmt-btn" onclick="selectFormat('chicago', this)">Chicago</button>
+            </div>
+          </div>
+
+          <div class="tool-actions">
+            <button class="btn btn-primary" onclick="generateRef()">生成参考文献</button>
+            <button class="btn" onclick="addToList()">添加到列表</button>
+          </div>
+
+          <label>生成结果</label>
+          <div class="output-box" id="refOutput"><button class="copy-btn" onclick="copyOutput('refOutput')">复制</button></div>
+
+          <div class="ref-list-section">
+            <h3>参考文献列表 <span id="refCount">(0)</span></h3>
+            <div class="ref-list" id="refList"></div>
+            <div class="tool-actions">
+              <button class="btn btn-primary" onclick="exportRefList('gbt7714')">导出 GB/T 7714 格式</button>
+              <button class="btn" onclick="exportRefList('apa')">导出 APA 格式</button>
+              <button class="btn" onclick="clearRefList()">清空列表</button>
+            </div>
+          </div>
+        </div>
+        <div class="ad-slot"><span class="ad-label">广告位</span></div>
+      </div>
+    </div>
+
+    <!-- Template Page -->
+    <div id="page-template" class="page">
+      <div class="container">
+        <h2 class="page-title">论文智能排版</h2>
+        <div class="template-workspace">
+          <p class="tool-desc">粘贴论文内容，自动排版为标准格式</p>
+
+          <div class="template-presets">
+            <label>选择模板：</label>
+            <div class="preset-buttons">
+              <button class="preset-btn active" onclick="selectPreset('gb', this)">国标 GB/T 7713</button>
+              <button class="preset-btn" onclick="selectPreset('thesis', this)">本科毕业论文</button>
+              <button class="preset-btn" onclick="selectPreset('master', this)">硕士论文</button>
+              <button class="preset-btn" onclick="selectPreset('journal', this)">期刊投稿</button>
+            </div>
+          </div>
+
+          <label>论文内容</label>
+          <textarea id="templateInput" placeholder="在此粘贴论文内容...&#10;&#10;提示：使用以下标记来识别结构：&#10;# 标题1&#10;## 标题2&#10;### 标题3&#10;&#10;或者直接粘贴纯文本，系统会自动识别标题、段落、列表等结构。" style="min-height:300px"></textarea>
+
+          <div class="format-options">
+            <div class="option-group">
+              <label>正文字体</label>
+              <select id="fontFamily"><option value="SimSun">宋体</option><option value="SimHei">黑体</option><option value="FangSong">仿宋</option><option value="KaiTi">楷体</option><option value="Times New Roman">Times New Roman</option></select>
+            </div>
+            <div class="option-group">
+              <label>正文字号</label>
+              <select id="fontSize"><option value="12">小四 (12pt)</option><option value="14">四号 (14pt)</option><option value="10.5">五号 (10.5pt)</option><option value="16">小三 (16pt)</option></select>
+            </div>
+            <div class="option-group">
+              <label>行距</label>
+              <select id="lineHeight"><option value="1.5">1.5 倍</option><option value="2">2 倍</option><option value="1.25">1.25 倍</option><option value="28">固定值 28pt</option></select>
+            </div>
+          </div>
+
+          <div class="tool-actions">
+            <button class="btn btn-primary" onclick="formatPaper()">智能排版</button>
+            <button class="btn" onclick="exportFormatted('html')">导出 HTML</button>
+            <button class="btn" onclick="exportFormatted('txt')">导出文本</button>
+          </div>
+
+          <label>排版预览</label>
+          <div class="paper-preview" id="paperPreview"></div>
+        </div>
+        <div class="ad-slot"><span class="ad-label">广告位</span></div>
+      </div>
+    </div>
+
+    <!-- Tools Page -->
+    <div id="page-tools" class="page">
+      <div class="container">
+        <h2 class="page-title">论文工具箱</h2>
+        <div class="tools-grid">
+          <div class="tool-panel">
+            <h3>&#x1F50D; 查重助手</h3>
+            <p class="tool-desc">粘贴两段文本，检测相似度</p>
+            <textarea id="checkText1" placeholder="原文内容" style="min-height:100px"></textarea>
+            <textarea id="checkText2" placeholder="待检测内容" style="min-height:100px;margin-top:8px"></textarea>
+            <div class="tool-actions">
+              <button class="btn btn-primary" onclick="checkSimilarity()">检测相似度</button>
+            </div>
+            <div class="output-box" id="checkOutput"></div>
+          </div>
+
+          <div class="tool-panel">
+            <h3>&#x1F4CA; 字数统计</h3>
+            <p class="tool-desc">实时统计论文字数</p>
+            <textarea id="countInput" placeholder="粘贴论文内容，实时统计字数" oninput="countWords()" style="min-height:150px"></textarea>
+            <div class="stats-grid" id="countStats"></div>
+          </div>
+
+          <div class="tool-panel">
+            <h3>&#x1F4DD; 摘要生成</h3>
+            <p class="tool-desc">从论文正文自动生成中英文摘要</p>
+            <textarea id="summaryInput" placeholder="粘贴论文正文" style="min-height:150px"></textarea>
+            <div class="tool-actions">
+              <button class="btn btn-primary" onclick="genSummary('zh')">生成中文摘要</button>
+              <button class="btn" onclick="genSummary('en')">Generate English Abstract</button>
+            </div>
+            <div class="output-box" id="summaryOutput"><button class="copy-btn" onclick="copyOutput('summaryOutput')">复制</button></div>
+          </div>
+
+          <div class="tool-panel">
+            <h3>&#x1F30D; 中英翻译</h3>
+            <p class="tool-desc">论文段落中英互译</p>
+            <textarea id="transInput" placeholder="粘贴要翻译的内容" style="min-height:150px"></textarea>
+            <div class="tool-actions">
+              <button class="btn btn-primary" onclick="translate('en')">中 &#8594; 英</button>
+              <button class="btn" onclick="translate('zh')">英 &#8594; 中</button>
+            </div>
+            <div class="output-box" id="transOutput"><button class="copy-btn" onclick="copyOutput('transOutput')">复制</button></div>
+          </div>
+
+          <div class="tool-panel">
+            <h3>&#x1F524; 关键词提取</h3>
+            <p class="tool-desc">从论文中自动提取关键词</p>
+            <textarea id="keywordInput" placeholder="粘贴论文内容" style="min-height:150px"></textarea>
+            <div class="tool-actions">
+              <button class="btn btn-primary" onclick="extractKeywords()">提取关键词</button>
+            </div>
+            <div class="output-box" id="keywordOutput"><button class="copy-btn" onclick="copyOutput('keywordOutput')">复制</button></div>
+          </div>
+
+          <div class="tool-panel">
+            <h3>&#x1F4C5; 日期格式转换</h3>
+            <p class="tool-desc">不同日期格式互转</p>
+            <input type="text" id="dateInput" placeholder="输入日期，如 2024-05-27 或 May 27, 2024" style="margin-bottom:8px">
+            <div class="tool-actions">
+              <button class="btn btn-primary" onclick="convertDate('cn')">转中文格式</button>
+              <button class="btn" onclick="convertDate('en')">转英文格式</button>
+              <button class="btn" onclick="convertDate('gb')">转 GB 格式</button>
+            </div>
+            <div class="output-box" id="dateOutput"><button class="copy-btn" onclick="copyOutput('dateOutput')">复制</button></div>
+          </div>
+        </div>
+        <div class="ad-slot"><span class="ad-label">广告位</span></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Premium Modal -->
+  <div class="modal-overlay" id="premiumModal" onclick="closePremium(event)">
+    <div class="modal">
+      <button class="modal-close" onclick="document.getElementById('premiumModal').classList.remove('active')">&times;</button>
+      <h2>&#x2B50; 升级 Pro 版</h2>
+      <p class="modal-subtitle">解锁全部高级功能，论文排版更轻松</p>
+      <div class="pricing-cards">
+        <div class="pricing-card">
+          <h3>单次</h3>
+          <div class="price">&yen;4.9</div>
+          <ul>
+            <li>不限次数格式转换</li>
+            <li>去除广告</li>
+            <li>高清导出</li>
+          </ul>
+          <button class="btn btn-primary" onclick="handlePay('once')">购买</button>
+        </div>
+        <div class="pricing-card featured">
+          <div class="badge">最划算</div>
+          <h3>学期卡</h3>
+          <div class="price">&yen;19.9</div>
+          <ul>
+            <li>一学期内无限使用</li>
+            <li>所有高级模板</li>
+            <li>优先客服支持</li>
+            <li>批量转换</li>
+          </ul>
+          <button class="btn btn-primary" onclick="handlePay('semester')">购买</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2026 论文格式转换器. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="js/converters.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
